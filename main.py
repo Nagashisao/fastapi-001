@@ -8,6 +8,13 @@ class Item(BaseModel):
     nome: str
     preco: float
 
+itens_exemplo = [
+    {"nome": "Maçã", "preco": 1.50},
+    {"nome": "Banana", "preco": 2.00},
+    {"nome": "Laranja", "preco": 1.75},
+    {"nome": "Pera", "preco": 2.30},
+]
+
 @app.get("/")
 def raiz():
     return {"mensagem" : "String"}
@@ -22,3 +29,9 @@ def ler_item(item_id : int):
         raise HTTPException(status_code=404, detail="Item não encontrado.")
     item = itens_exemplo[item_id]
     return {"id" : item_id, **item}
+
+@app.post("/itens/")
+def criar_item(item: Item):
+    novo_item = item.model_dump()
+    itens_exemplo.append(novo_item)
+    return novo_item
