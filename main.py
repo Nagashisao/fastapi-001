@@ -30,7 +30,7 @@ def ler_item(item_id : int):
     item = itens_exemplo[item_id]
     return {"id" : item_id, **item}
 
-@app.post("/itens/")
+@app.post("/itens/", status_code=201)
 def criar_item(item: Item):
     novo_item = item.model_dump()
     itens_exemplo.append(novo_item)
