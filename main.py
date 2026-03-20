@@ -35,3 +35,18 @@ def criar_item(item: Item):
     novo_item = item.model_dump()
     itens_exemplo.append(novo_item)
     return novo_item
+
+@app.put("/itens/{item_id}")
+def atualizar_item(item_id: int, item: Item):
+    if item_id < 0 or item_id >= len(itens_exemplo):
+        raise HTTPException(status_code=404, detail="Item não encontrado")
+    itens_exemplo[item_id] = item.model_dump()
+    item_atualizado = itens_exemplo[item_id]
+    return item_atualizado
+
+@app.delete("/itens/{item_id}", status_code=204)
+def remover_item(item_id: int):
+    if item_id < 0 or item_id >= len(itens_exemplo):
+        raise HTTPException(status_code=404, detail="Item não encontrado")
+    itens_exemplo.pop(item_id)
+    return
