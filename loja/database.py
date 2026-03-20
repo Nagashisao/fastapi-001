@@ -1,16 +1,9 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import Dict
-
-app = FastAPI()
-
-class Item(BaseModel):
-    nome: str
-    preco: float
+from fastapi import HTTPException
+from .models import Item
 
 class ItemDatabase:
     def __init__(self):
-        self._itens: Dict[int, dict] = {
+        self._itens: dict[int, dict] = {
             1: {"nome": "Maçã", "preco": 1.50},
             2: {"nome": "Banana", "preco": 2.00},
             3: {"nome": "Laranja", "preco": 1.75},
@@ -49,30 +42,10 @@ class ItemDatabase:
             raise HTTPException(status_code=404, detail="Item não encontrado.")
         self._itens.pop(item_id)
 
-db = ItemDatabase()
+_db_instance = ItemDatabase()
 
-@app.get("/")
-def raiz() -> dict:
-    return {"mensagem": "String"}
-
-@app.get("/itens/")
-def listar_itens(skip: int = 0, limit: int = 10) -> list[dict]:
-    return db.listar(skip, limit)
-
-@app.get("/itens/{item_id}")
-def ler_item(item_id: int) -> dict:
-    item = db.obter(item_id)
-    return {"id": item_id, **item}
-
-@app.post("/itens/", status_code=201)
-def criar_item(item: Item) -> dict:
-    return db.criar(item)
-
-@app.put("/itens/{item_id}")
-def atualizar_item(item_id: int, item: Item) -> dict:
-    return db.atualizar(item_id, item)
-
-@app.delete("/itens/{item_id}", status_code=204)
-def remover_item(item_id: int) -> None:
-    db.remover(item_id)
-    return
+def get_db() -> ItemDatabase:
+    """
+    Dependência que fornece a instância única do banco de dados.
+    """
+    return _db_instance
