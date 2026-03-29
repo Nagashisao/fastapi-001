@@ -1,13 +1,13 @@
 from fastapi import HTTPException
-from .models import Item
+from loja.models import Item
 
 class ItemDatabase:
     def __init__(self):
         self._itens: dict[int, dict] = {
-            1: {"nome": "Maçã", "preco": 1.50},
-            2: {"nome": "Banana", "preco": 2.00},
-            3: {"nome": "Laranja", "preco": 1.75},
-            4: {"nome": "Pera", "preco": 2.30},
+            1: {"nome": "Maçã", "preco": 1.50, "marca": None},
+            2: {"nome": "Banana", "preco": 2.00, "marca": None},
+            3: {"nome": "Laranja", "preco": 1.75, "marca": None},
+            4: {"nome": "Pera", "preco": 2.30, "marca": None},
         }
         self._proximo_id = 5
 
@@ -34,7 +34,8 @@ class ItemDatabase:
         if item_id not in self._itens:
             raise HTTPException(status_code=404, detail="Item não encontrado.")
         self._itens[item_id] = item.model_dump()
-        return {"id": item_id, **self._itens[item_id]}
+        item_atualizado = self._itens[item_id]
+        return {"id": item_id, **item_atualizado}
     
     def remover(self, item_id: int) -> None:
         """Função vazia que remove um item"""

@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends
-from ..models import Item
-from ..database import ItemDatabase, get_db
+from loja.models import Item
+from loja.database import ItemDatabase, get_db
 
 router = APIRouter(prefix="/itens", tags=["itens"])
 
 @router.get("/")
-def listar(skip: int = 0, 
+def listar_itens(skip: int = 0, 
     limit: int = 10,
     db: ItemDatabase = Depends(get_db)
     ) -> list[dict]:
     return db.listar(skip, limit)
 
 @router.get("/{item_id}")
-def ler_item(item_id: int,
+def obter_item(item_id: int,
     db: ItemDatabase = Depends(get_db)
     ) -> dict:
     item = db.obter(item_id)
